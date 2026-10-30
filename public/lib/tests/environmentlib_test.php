@@ -271,10 +271,10 @@ END;
         require_once($CFG->libdir . '/customcheckslib.php');
 
         $valid = [
-            ['8.2.35', 'cli', null, null],
-            ['8.3.36', 'fpm-fcgi', null, null],
-            ['8.4.27', 'apache2handler', null, null],
-            ['8.5.12', 'cli', null, null],
+            ['8.2.35', 'cli', null, false],
+            ['8.3.36', 'fpm-fcgi', null, false],
+            ['8.4.27', 'apache2handler', null, false],
+            ['8.5.12', 'cli', null, false],
             ['8.3.6', 'fpm-fcgi', '24.04', true],
             ['8.3.6', 'cli', '24.04', true],
         ];
@@ -283,12 +283,12 @@ END;
         }
 
         $invalid = [
-            ['8.2.34', 'cli', null, null],
-            ['8.3.35', 'fpm-fcgi', null, null],
-            ['8.4.26', 'apache2handler', null, null],
-            ['8.5.11', 'cli', null, null],
-            ['8.1.99', 'cli', null, null],
-            ['8.4.27RC1', 'cli', null, null],
+            ['8.2.34', 'cli', null, false],
+            ['8.3.35', 'fpm-fcgi', null, false],
+            ['8.4.26', 'apache2handler', null, false],
+            ['8.5.11', 'cli', null, false],
+            ['8.1.99', 'cli', null, false],
+            ['8.4.27RC1', 'cli', null, false],
             ['8.3.6', 'fpm-fcgi', '24.04', false],
             ['8.3.6', 'fpm-fcgi', '22.04', true],
             ['8.3.6', 'unknown', '24.04', true],
