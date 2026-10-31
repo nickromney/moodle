@@ -1048,6 +1048,7 @@ $string['perfdebugdeferred'] = 'Waiting until the script ends to show the perfor
 $string['performance'] = 'Performance';
 $string['pgcluster'] = 'PostgreSQL Cluster';
 $string['pgclusterdescription'] = 'PostgreSQL version/cluster parameter for command line operations. If you only have one postgresql on your system or you are not sure what this is, leave this blank.';
+$string['php2shellpatched'] = 'PHP must be on a PHP2Shell-patched release: 8.2.35, 8.3.36, 8.4.27, or 8.5.12 or later in the same supported branch. PHP versions below 8.2 and prereleases are not supported.';
 $string['phpfloatproblem'] = 'Detected unexpected problem in handling of PHP float numbers - {$a}';
 $string['pid'] = 'PID';
 $string['pleaserefreshregistration'] = 'Your site is registered. Registration last updated {$a}.<br />The \'Site registration\' scheduled task keeps your registration up to date. You can also manually update your registration at any time.';

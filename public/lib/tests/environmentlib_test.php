@@ -262,4 +262,65 @@ END;
             'restrict_php_version returns false if the current version is less than the restricted version'
         );
     }
+
+    /**
+     * Test PHP2Shell PHP version floors and the scoped Ubuntu backport.
+     */
+    public function test_php2shell_php_version_supported(): void {
+        global $CFG;
+        require_once($CFG->libdir . '/customcheckslib.php');
+
+        $valid = [
+            ['8.2.35', 'cli', null, false],
+            ['8.3.36', 'fpm-fcgi', null, false],
+            ['8.4.27', 'apache2handler', null, false],
+            ['8.5.12', 'cli', null, false],
+            ['8.3.6', 'fpm-fcgi', '24.04', true],
+            ['8.3.6', 'cli', '24.04', true],
+        ];
+        foreach ($valid as [$version, $sapi, $ubuntuversion, $backportpackageverified]) {
+            $this->assertTrue(php2shell_php_version_supported($version, $sapi, $ubuntuversion, $backportpackageverified));
+        }
+
+        $invalid = [
+            ['8.2.34', 'cli', null, false],
+            ['8.3.35', 'fpm-fcgi', null, false],
+            ['8.4.26', 'apache2handler', null, false],
+            ['8.5.11', 'cli', null, false],
+            ['8.1.99', 'cli', null, false],
+            ['8.4.27RC1', 'cli', null, false],
+            ['8.3.6', 'fpm-fcgi', '24.04', false],
+            ['8.3.6', 'fpm-fcgi', '22.04', true],
+            ['8.3.6', 'unknown', '24.04', true],
+        ];
+        foreach ($invalid as [$version, $sapi, $ubuntuversion, $backportpackageverified]) {
+            $this->assertFalse(php2shell_php_version_supported($version, $sapi, $ubuntuversion, $backportpackageverified));
+        }
+    }
+
+    /**
+     * Test the Ubuntu exception requires the mapped package and an unchanged owned file.
+     */
+    public function test_php2shell_backport_package_verified(): void {
+        global $CFG;
+        require_once($CFG->libdir . '/customcheckslib.php');
+        $files = ['./usr/bin/php8.3'];
+        $checksums = ['0123456789abcdef0123456789abcdef  usr/bin/php8.3'];
+
+        $this->assertTrue(php2shell_backport_package_verified(
+            'cli', 'php8.3-cli', '8.3.6-0ubuntu0.24.04.13', '/usr/bin/php8.3', $files, $checksums,
+            '0123456789abcdef0123456789abcdef'));
+        $this->assertFalse(php2shell_backport_package_verified(
+            'cli', 'php8.3-fpm', '8.3.6-0ubuntu0.24.04.13', '/usr/bin/php8.3', $files, $checksums,
+            '0123456789abcdef0123456789abcdef'));
+        $this->assertFalse(php2shell_backport_package_verified(
+            'cli', 'php8.3-cli', '8.3.6-0ubuntu0.24.04.12', '/usr/bin/php8.3', $files, $checksums,
+            '0123456789abcdef0123456789abcdef'));
+        $this->assertFalse(php2shell_backport_package_verified(
+            'cli', 'php8.3-cli', '8.3.6-0ubuntu0.24.04.13', '/usr/bin/php8.3', [], $checksums,
+            '0123456789abcdef0123456789abcdef'));
+        $this->assertFalse(php2shell_backport_package_verified(
+            'cli', 'php8.3-cli', '8.3.6-0ubuntu0.24.04.13', '/usr/bin/php8.3', $files, $checksums,
+            'ffffffffffffffffffffffffffffffff'));
+    }
 }
